@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSAP练习</title>
+    <style>
+      .container{
+         display: flex;
+      }
+        .box{
+            width: 100px;
+            height: 100px;
+            background-color: aqua;
+            margin: 0 10px;
+            border-radius: 8px;
+            font-size: 22px;
+        }
+        .notelist{
+         display: flex;
+        }
+        .note{
+            width: 100px;
+            height: 100px;
+            margin: 0 10px;
+            border-radius: 8px;
+            position: absolute;
+         }
+        .one{
+         background-color: antiquewhite;
+         left: 130px;
+        }
+        .two{
+         background-color: aquamarine;
+         left: 240px;
+        }
+        .three{
+         background-color: blueviolet;
+         left: 350px;
+        }
+        .four{
+         background-color: brown;
+         left: 460px;
+        }
+        .judege{
+         display: flex;
+         position: absolute;
+         top: 505px;
+         left: 133px;
+        }
+        .judege div{
+         width: 105px;
+         height: 105px;
+         border: 1px solid;
+         margin: 0 2px;
+         border-radius: 8px;
+         font-size: 32px;
+         text-align: center;
+         line-height: 105px;
+         cursor: pointer;
+         user-select: none;
+        }
+        .judegetext{
+         background-image: linear-gradient(to right, orange, purple);
+         -webkit-background-clip: text;
+         color: transparent;
+         font-size: 30px;
+         position: absolute;
+         top: 111px;
+         left: 18px;
+        }
+        .shadowdialog{
+         width: 300px;
+         height: 200px;
+         background-color: rgba(0,0,0,0.5);
+         position: absolute;
+         text-align: center;
+         left: 200px;
+         top: 150px;
+         visibility: visible;
+        }
+        .shadowdialog button{
+         width: 70px;
+         height: 25px;
+         margin-top: 40px;
+        }
+        /* .shadownumber{
+         width: 100px;
+         height: 100px;
+         background-color: rgba(0,0,0,0.5);
+         color: #fff;
+         text-align: center;
+         line-height: 100px;
+         border-radius: 50%;
+         position: absolute;
+         left: 300px;
+         top: 207px;
+         
+        } */
+    </style>
+</head>
+<body>
+   <div class="container">
+      <div class="box">
+         <div class="score"></div>分
+      </div>
+      <div class="notelist">
+         <div class="note one"></div>
+         <div class="note two"></div>
+         <div class="note three"></div>
+         <div class="note four"></div>
+      </div>
+      <div class="judege">
+         <div class="onejudegenote" onclick="touchclick('one')">D</div>
+         <div class="twojudegenote" onclick="touchclick('two')">F</div>
+         <div class="threejudegenote" onclick="touchclick('three')">J</div>
+         <div class="fourjudegenote" onclick="touchclick('four')">K</div>
+      </div>
+      <div class="judegetext">
+      </div>
+      <div class="shadowdialog">
+         <h2>请输入下落数量</h2>
+         <input type="number" class="notecount" /><br/>
+         <button onclick="confirm()" class="startbtn">开始</button>
+      </div>
+      <div class="shadownumber"></div>
+   </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.0/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.0/CSSRulePlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.0/Draggable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.0/EaselPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.0/MotionPathPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.0/PixiPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.0/TextPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.0/ScrollToPlugin.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.3.0/ScrollTrigger.min.js"></script>
+<script>
+   function start(line){//(line表示第几轨道)
+      let notelist=document.querySelector('.notelist')
+      let count=document.querySelector('.notecount').value
+      if (count!=null&&count!=undefined) {
+         for(let i=0;i<count;i++){
+            let note=document.createElement('div')
+            note.setAttribute('class',`note ${line} ${line}${i}`)
+            notelist.appendChild(note)
+         }
+
+         let t1=gsap.timeline()
+         for(let i=0;i<count;i++){
+            let randomduration=(Math.random()*5).toFixed(2)
+            while(randomduration<0.5){
+               randomduration=(Math.random()*5).toFixed(2)
+            }
+            t1.to(`.${line}${i}`,{y:650,duration:randomduration})
+            if (line=='four'&&i==count-1) {
+               t1.to('.shadowdialog',{
+                  delay:5,
+                  onStart:()=>{
+                     document.querySelector('.shadowdialog').style.visibility='visible'
+                     document.querySelector('.startbtn').innerHTML='重新开始'
+                  }
+               })
+            }
+         }
+      }
+   }
+   function confirm(){
+      let shadowdialog=document.querySelector('.shadowdialog')
+      shadowdialog.style.visibility='hidden'
+      start('one')
+      let randomdelay=(Math.random()*5).toFixed(2)
+      while(randomdelay<1){
+         randomdelay=(Math.random()*5).toFixed(2)
+      }
+      setTimeout(()=>{
+         start('two')
+      },randomdelay*1000)
+
+      randomdelay=(Math.random()*5).toFixed(2)
+      while(randomdelay<1){
+         randomdelay=(Math.random()*5).toFixed(2)
+      }
+      setTimeout(()=>{
+         start('three')
+      },randomdelay*1000)
+
+      randomdelay=(Math.random()*5).toFixed(2)
+      while(randomdelay<1){
+         randomdelay=(Math.random()*5).toFixed(2)
+      }
+      setTimeout(()=>{
+         start('four')
+      },randomdelay*1000)
+
+   }
+   function touchclick(line){
+      let notelist=document.querySelectorAll(`.${line}`)
+      notelist.forEach((item,index)=>{
+         if (index>0) {
+            //如果当前note正在下落
+            let flag=false
+            if (item.style.transform!='translate(0px, 650px)'&&item.style.transform!='') {
+               let len=Number(item.style.transform.slice(16,-8))//当前的位置
+               if (!flag) {
+                  if (len<=550&&len>=450) {//在精准区间内就增加动画效果
+                     gsap.to(`.${line}${index-1}`,{duration:0.25,rotation:360,scale:1.2,yoyo:true,repeat:1})
+                     freshScore(100)
+                     freshJudge('perfect')
+                  }else if (len<=600&&len>=400) {
+                     freshScore(50)
+                     gsap.to(`.${line}${index-1}`,{duration:0.25,rotation:360,scale:1.2,yoyo:true,repeat:1})
+                     freshJudge('good')
+                  }else{
+                     freshScore(10)
+                     gsap.to(`.${line}${index-1}`,{duration:0.25,opacity:0})
+                     freshJudge('bad')
+                  }
+                  flag=true
+                  len=0
+               }
+               
+            }
+         }
+         
+      })
+   }
+   
+   let score=0
+   let scoredom=document.querySelector('.score')
+   function freshScore(addscore){
+      score+=addscore
+      scoredom.innerHTML=score
+   }
+   let judegetextdom=document.querySelector('.judegetext')
+   function freshJudge(text){
+      judegetextdom.innerHTML=text
+      judegetextdom.style.visibility='hidden'
+      setTimeout(()=>{
+         judegetextdom.style.visibility='visible'
+      },100)
+      
+      if (text=='perfect') {
+         judegetextdom.style.color='transparent'
+      }else if (text=='good') {
+         judegetextdom.style.color='blue'
+      }else if (text=='bad') {
+         judegetextdom.style.color='grey'
+      }
+   }
+   // function startBefore(){
+   //    gsap.to(".shadownumber", { opacity:1, duration: 1, ease: "back.in",yoyo:true,repeat:1 });
+   // }
+   //不只是鼠标点击
+   document.onkeydown=(e)=>{
+
+      if (e.code=='KeyD') {
+         touchclick('one')
+      }
+      if (e.code=='KeyF') {
+         touchclick('two')
+      }
+      if (e.code=='KeyJ') {
+         touchclick('three')
+      }
+      if (e.code=='KeyK') {
+         touchclick('four')
+      }
+      if (e.code=='F12') {
+         // return false;
+      }
+   }
+   //防止f12
+   document.oncontextmenu=()=>{
+      return false;
+   }
+   document.onselectstart=()=>{
+      return false;
+   }
+</script>
+</body>
+</html>
